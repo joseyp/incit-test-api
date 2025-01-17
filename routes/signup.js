@@ -41,7 +41,7 @@ const sendEmailService = async (to, subject, text) => {
 
     await nodemailer
       .createTransport({
-        host: "Gmail",
+        service: "Gmail", // Or another service
         auth: {
           user: process.env.EMAIL_USER, // Your email
           pass: process.env.EMAIL_PASS, // Your email password
@@ -55,12 +55,29 @@ const sendEmailService = async (to, subject, text) => {
       });
 
     console.log("Email sent successfully!");
-
-    return {};
   } catch (error) {
     console.error("Error sending email:", error);
   }
 };
+
+// const sendVerificationEmail = (userEmail, token) => {
+//   const verificationUrl = `${process.env.FRONTEND_URL}/sign-up/verify?token=${token}`;
+
+//   const mailOptions = {
+//     from: "incit@email.com",
+//     to: userEmail,
+//     subject: "Email Verification",
+//     text: `Please verify your email by clicking the link: ${verificationUrl}`,
+//   };
+
+//   transporter.sendMail(mailOptions, (err, info) => {
+//     if (err) {
+//       console.error("Error sending email:", err);
+//     } else {
+//       console.log("Verification email sent:", info.response);
+//     }
+//   });
+// };
 
 async function sendEmailVerification(email, token, res) {
   try {
@@ -109,7 +126,25 @@ router.post("/", requireJsonContent, async (req, res) => {
     const userId = userResult.rows[0].id;
 
     const verificationToken = await createVerificationToken(userId);
-    sendEmailVerification(email, verificationToken, res);
+    // sendEmailVerification(email, verificationToken, res);
+
+    const verificationUrl = `${process.env.FRONTEND_URL}/sign-up/verify?token=${verificationToken}`;
+    const emailContent = `Click the link to verify your email: ${verificationUrl}`;
+
+    await nodemailer
+      .createTransport({
+        service: "Gmail", // Or another service
+        auth: {
+          user: process.env.EMAIL_USER, // Your email
+          pass: process.env.EMAIL_PASS, // Your email password
+        },
+      })
+      .sendMail({
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: "Verification Email",
+        text: emailContent,
+      });
 
     await client.query("COMMIT");
 
