@@ -5,16 +5,16 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const cors = require("cors");
 
-var indexRouter = require("./routes/index");
-var userRouter = require("./routes/user");
-var signUpRouter = require("./routes/signup");
-var signInRouter = require("./routes/signin");
+var indexRouter = require("../routes/index");
+var userRouter = require("../routes/user");
+var signUpRouter = require("../routes/signup");
+var signInRouter = require("../routes/signin");
 
 var app = express();
 
 app.use(
   cors({
-    origin: "http://localhost:3000", // Allow requests from this origin
+    origin: "http://localhost:3001", // Allow requests from this origin
     methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
     credentials: true, // Allow cookies if needed
   })
@@ -50,5 +50,7 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500);
   res.render("error");
 });
+
+// app.listen(3000, () => console.log("Server ready on port 3000."));
 
 module.exports = app;
