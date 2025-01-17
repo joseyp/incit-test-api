@@ -24,22 +24,39 @@ async function createVerificationToken(userId) {
 
 const sendEmailService = async (to, subject, text) => {
   try {
-    const transporter = nodemailer.createTransport({
-      service: "Gmail", // Or another service
-      auth: {
-        user: process.env.EMAIL_USER, // Your email
-        pass: process.env.EMAIL_PASS, // Your email password
-      },
-    });
+    // const transporter = nodemailer.createTransport({
+    //   service: "Gmail", // Or another service
+    //   auth: {
+    //     user: process.env.EMAIL_USER, // Your email
+    //     pass: process.env.EMAIL_PASS, // Your email password
+    //   },
+    // });
 
-    await transporter.sendMail({
-      from: process.env.EMAIL_USER,
-      to,
-      subject,
-      text,
-    });
+    // await transporter.sendMail({
+    //   from: process.env.EMAIL_USER,
+    //   to,
+    //   subject,
+    //   text,
+    // });
+
+    await nodemailer
+      .createTransport({
+        host: "Gmail",
+        auth: {
+          user: process.env.EMAIL_USER, // Your email
+          pass: process.env.EMAIL_PASS, // Your email password
+        },
+      })
+      .sendMail({
+        from: process.env.EMAIL_USER,
+        to,
+        subject,
+        text,
+      });
 
     console.log("Email sent successfully!");
+
+    return {};
   } catch (error) {
     console.error("Error sending email:", error);
   }
