@@ -128,7 +128,7 @@ router.post("/", requireJsonContent, async (req, res) => {
     const verificationToken = await createVerificationToken(userId);
     // sendEmailVerification(email, verificationToken, res);
 
-    const verificationUrl = `${process.env.FRONTEND_URL}/sign-up/verify?token=${verificationToken}`;
+    const verificationUrl = `${process.env.FRONTEND_URL}/verify?token=${verificationToken}`;
     const emailContent = `Click the link to verify your email: ${verificationUrl}`;
 
     await nodemailer

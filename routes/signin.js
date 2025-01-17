@@ -57,7 +57,7 @@ router.post("/", async (req, res) => {
     const { email, password } = req.body;
 
     const userResult = await client.query(
-      `SELECT id, email, name, password_hash 
+      `SELECT id, email, name, password_hash, verified 
        FROM users 
        WHERE email = $1`,
       [email]
@@ -73,6 +73,11 @@ router.post("/", async (req, res) => {
     if (!validPassword) {
       return res.status(401).json({ error: "Invalid credentials" });
     }
+
+    if (!user.verified)
+      return res
+        .status(401)
+        .json({ error: "Please check your email for verification" });
 
     const token = await createSession(user.id, client);
 
